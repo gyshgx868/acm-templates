@@ -1,0 +1,49 @@
+\section{Java读写文件}
+
+从文件读入：
+
+\begin{lstlisting}
+Scanner in = new Scanner(new File("data.in"));
+BufferedReader in = new BufferedReader(new FileReader("data.in"));
+\end{lstlisting}
+
+写入到文件：
+
+\begin{lstlisting}
+PrintWriter out = new PrintWriter("test.out");
+out.println("test");
+out.close();
+\end{lstlisting}
+
+\section{String}
+
+\begin{enumerate}
+  \item StringTokenizer属于java.util类，引用的时候导入类：import java.util.*；
+  \item 构造函数：
+    \begin{enumerate}
+      \item StringTokenizer(String str) \\
+            构造一个解析str的对象，这时候默认的Token间隔符有“空格”、“制表符”、“换行符”、“回车符”。
+      \item StringTokenizer(String str, String delim) \\
+            构造一个用来解析str的StringTokenizer对象，并提供一个指定的分隔符，如“，”等。
+      \item StringTokenizer(String str, String delim, boolean returnDelims) \\
+            构造一个用来解析str的StringTokenizer对象，并提供一个指定的分隔符（同2），同时，指定是否返回分隔符。
+    \end{enumerate}
+  \item 方法：
+    \begin{enumerate}
+      \item int countTokens()：返回nextToken方法被调用的次数。如果采用构造函数1和2，返回的就是分隔符数量。
+      \item boolean hasMoreTokens()：返回是否还有分隔符。
+      \item boolean hasMoreElements()：结果同上。
+      \item String nextToken()：返回从当前位置到下一个分隔符的字符串。
+      \item Object nextElement()：结果同4。
+      \item String nextToken(String delim)：与4类似，以指定的分隔符返回结果。
+    \end{enumerate}
+\end{enumerate}
+
+\begin{lstlisting}
+String s = "The=Java=platform=is=the=ideal=platform=for=network=computing";
+StringTokenizer st = new StringTokenizer(s, "=", true); // 当为false时不包括=
+System.out.println("Token Total: " + st.countTokens());
+while (st.hasMoreElements()) {
+  System.out.println(st.nextToken());
+}
+\end{lstlisting}

@@ -1,0 +1,124 @@
+\section{C++中的字符串}
+
+\subsection{string类}
+
+有些字符串操作本来很简单，但是在C语言里就很麻烦。C++通过std::string类，在一定程度上缓解了这个问题，但是速度很慢。std::string的头文件为<string>。
+
+cin、cout可以直接输入、输出string字符串。如果需要整行读入，可以用getline函数：
+
+\begin{lstlisting}
+string st;
+cin >> st;
+while (getline(cin, st)) {
+  cout << st << endl;
+}
+\end{lstlisting}
+
+基本操作：string类相当于vector<char>，所以string可以使用vector所支持的大部分操作，例如：
+
+\begin{lstlisting}
+string st = "abcde";
+cout << st[1] << endl;
+st.push_back('f');
+\end{lstlisting}
+
+\begin{itemize}
+  \item 可以用“+”连接两个字符串。当然，两个字符串中需要至少一个是string类型，否则会编译错误。由于涉及内存分配，不建议使用；
+  \item 用==、!=判断两个字符串是否相等。用比较符号比较两个字符串的大小；
+  \item 用+=运算符或st.append()在st后面附加字符串；
+  \item 用st.size()获得字符串st的长度；
+  \item 用st.find()在字符串里寻找子串；如果没找到，函数会返回string::npos； \\
+        size\_t p = st.find("hello", 0); // 第二个参数表示起始位置
+  \item 用st.substr(5, 10)来截取从第5个字符开始、长度为10的字符串。如果长度为string::npos，则一直截取到字符串结束；
+  \item 用st.c\_str()获取一个字符串数组，这样就可以继续用C语言的处理方式来处理字符串了。
+\end{itemize}
+
+\subsection{stringstream}
+
+stringstream可用于从字符串中读取内容，头文件为<sstream>。注意，stringstream的速度非常慢。
+
+以下是“输入若干行整数，求它们的和”的代码：
+
+\begin{lstlisting}
+string st;
+while (getline(cin, st)) {
+  stringstream ss(st);
+  int sum = 0, p;
+  while (ss >> p) { sum += p; }
+  cout << sum << endl;
+}
+\end{lstlisting}
+
+\section{字符串匹配}
+
+\paragraph{问题} 已知原串和模式串，求模式串在原串中的个数和位置。
+
+对于此类问题，很容易想到朴素算法，或者是strstr()与string的find()。不过，在字符串很长的情况下，朴素算法会浪费时间。C和C++标准也没有对strstr和find的实现方式做出规定，而且我们碰到的问题也并不总是单纯的字符串，所以我们需要了解更高效的算法。
+
+常用的串匹配算法有KMP算法、BM算法、KR算法等。
+
+\subsection{KMP算法}
+
+KMP算法的原理：假设原串S为abababacabcababacbc，模式串P为ababacb。
+
+按照朴素算法的做法，发现不匹配之后，应该把模式串向右移动一位。而KMP算法会根据预处理的结果来决定应该把模式串向右移动多少位。
+
+\lstinputlisting{string/kmp.cpp}
+
+\subsection{扩展KMP (Z函数)}
+\lstinputlisting{string/z_algorithm.cpp}
+
+\section{字符串哈希}
+
+\paragraph{例题} POJ1200（给定字符串以及一个长度$n$，询问该字符串中长度为$n$的不同子串有多少个）
+
+\lstinputlisting{string/string_hash.cpp}
+
+\section{字典树}
+
+query函数返回以s为前缀的单词共有多少个。
+
+\paragraph{例题} HDU1251
+
+\lstinputlisting{string/trie.cpp}
+
+\section{AC自动机}
+
+\paragraph{例题} HDU2222
+
+\lstinputlisting{string/aho_corasick.cpp}
+
+\section{后缀数组}
+
+\paragraph{例题} 洛谷P2408（不同子串个数）
+
+\lstinputlisting{string/suffix_array.cpp}
+
+\section{回文树}
+
+\paragraph{例题} HDU5421，洛谷P5496（回文自动机）
+
+\lstinputlisting{string/palindromic_tree.cpp}
+
+\section{字符串表示法}
+
+\subsection{最小表示法}
+
+对于一个字符串$S$，求$S$的循环的同构字符串$S^{'}$中字典序最小的一个。例如，序列
+\[
+  [10,9,8,7,6,5,4,3,2,1]
+\]
+的最小表示为
+\[
+  [1,10,9,8,7,6,5,4,3,2]
+\]
+
+\paragraph{例题} 洛谷P1368
+
+\lstinputlisting{string/min_representation.cpp}
+
+\subsection{最大表示法}
+\lstinputlisting{string/max_representation.cpp}
+
+\section{最长回文字串}
+\lstinputlisting{string/manacher.cpp}

@@ -1,0 +1,127 @@
+\subsection{排列组合的计算}
+
+排列的定义：
+
+\begin{equation}
+  A^m_n = n(n-1)(n-2) \cdots (n-m+1)
+\end{equation}
+
+组合的定义：
+
+\begin{equation}
+  C^m_n = \frac{A^m_n}{m!} = \frac{n(n-1)(n-2) \cdots (n-m+1)}{m!}
+\end{equation}
+
+组合数的计算：
+\begin{itemize}
+  \item 加法：$C^m_n=C^{m-1}_{n-1}+C^m_{n-1}$，边界条件为$C^0_n=C^n_n=1$
+  \item 乘法（注意不要改变乘除顺序）：
+    \begin{equation}
+      C^m_n = \left \lbrace
+        \begin{array}{ll}
+          1	&	(m=0)	\\
+          \frac{(n-m+1)C^{m-1}_n}{m} & (0<m \leq \frac{n}{2}) \\
+          C^{n-m}_n & (\frac{n}{2}<m \leq n)
+        \end{array}
+      \right.
+    \end{equation}
+\end{itemize}
+
+注意：很多排列组合问题的答案确实可以用数学表达式来表示，但是，数学表达式可能并不适合计算机，因此，\textbf{尝试寻找递推关系往往比直接找数学关系更好。}
+
+\subsection{排列组合的生成}
+
+\subsubsection{类循环排列}
+
+示例：0000、0001、0002、0010、0011、0012、0020、0021、0022、0100、0101……2222
+
+在数字位数和可用数字个数不确定的情况下，显然无法用多重循环——用递归就可以了。
+
+注意，某些问题也可以用位运算来解决。例如只有0和1的时候，或者数字是0、1、2、3的时候。
+
+\subsubsection{全排列 (STL)}
+
+\begin{itemize}
+  \item next\_permutation()函数将按字母表顺序生成给定序列的下一个较大的排列，如果还有下一个排列，那么函数返回true，否则返回false；
+  \item prev\_permutation()函数与之相反，是生成给定序列的上一个较小的排列。两个函数都在<algorithm>头文件里面。
+\end{itemize}
+
+\begin{lstlisting}
+int main() {
+  int a[] = {1, 2, 3};
+  do {
+    for (int i = 0; i < 3; i++) { printf("%d ", a[i]); }
+    printf("\n");
+  } while (next_permutation(a, a + 3));
+  return 0;
+}
+\end{lstlisting}
+
+\subsubsection{一般组合}
+
+从$n$个元素中任取$m$个元素，请输出所有取法。假设有1到5这5个元素，从中取3个，则序列应该为：123、124、125、134、135、145、234、235、245、345。
+
+\lstinputlisting{math/combinatorics/combination.cpp}
+
+\subsubsection{求全部子集}
+
+以下代码求出的集合包含空集和原集合。
+
+\lstinputlisting{math/combinatorics/subsets.cpp}
+
+\subsubsection{由上一排列生成下一排列}
+
+\paragraph{示例} 153642经过变换之后应该是154236。
+
+\paragraph{思路} 从右向左扫描，找到第一个破坏顺序的数$p$（原来从右向左时数字是从小到大变化的），如果找不到，说明此排列已经是最后一个排列了。接下来在$p$的右边找到大于$p$的第一个数，并与$p$交换。之后将原来$p$位置右面的所有数倒序即可。
+
+\lstinputlisting{math/combinatorics/next_permutation.cpp}
+
+\subsection{组合数}
+
+\subsubsection{暴力求组合数}
+
+\paragraph{注} 需要快速幂算法quick\_pow，以及快速乘法quick\_mul。
+
+\lstinputlisting{math/combinatorics/brute_combination.cpp}
+
+\subsubsection{组合数打表}
+\lstinputlisting{math/combinatorics/combination_table.cpp}
+
+\subsubsection{组合数在线}
+
+\paragraph{注} 需要求解逆元函数get\_inv，调用函数之前，需要使用init初始化。
+
+\lstinputlisting{math/combinatorics/get_combination.cpp}
+
+\subsection{Lucas定理}
+
+\paragraph{注} 需要组合数在线算法。
+
+\lstinputlisting{math/combinatorics/lucas.cpp}
+
+\subsection{贝尔数}
+
+贝尔数给出了集合划分的数目，集合S的一个划分是定义为S的两两不相交的非空子集的族，它们的并是S。
+
+3个元素的集合$\{a,b,c\}$有5种不同的划分方法：$\{\{a\},\{b\},\{c\}\}$、$\{\{a\},\{b,c\}\}$、$\{\{b\},\{a,c\}\}$、$\{\{c\},\{a,b\}\}$、$\{\{a,b,c\}\}$。
+
+划分的定义要求空集的划分中的每个成员都是非空集合。
+
+\paragraph{注} 需要组合数打表。
+
+\lstinputlisting{math/combinatorics/get_bells.cpp}
+
+\subsection{Gray码}
+
+格雷码是一个数列集合，每个数使用二进位来表示，假设使用$n$位元来表示每个数字，任两个数之间只有一个位元值不同。
+
+例如以下为3位元的格雷码：000，001，011，010，110，111，101，100。
+
+\lstinputlisting{math/combinatorics/gray.cpp}
+
+\subsection{幻方构造}
+
+幻方（Magic Square）是一种将数字安排在正方形格子中，使每行、列和对角线上的数字和都相等的方法。
+
+\lstinputlisting{math/combinatorics/magic_square.cpp}

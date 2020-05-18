@@ -1,0 +1,23 @@
+求LCA的Tarjan算法是一个经典的离线算法。
+
+Tarjan算法用到了并查集。LCA问题可以用$\mathcal{O}(n+Q)$的时间来解决，其中$Q$为询问的次数。
+
+Tarjan算法基于深度优先搜索的框架。对于新搜索到的一个结点，首先创建由这个结点构成的集合，再对当前结点的每一个子树进行搜索，每搜索完一棵子树，则可确定子树内的LCA询问都已解决，其他的LCA询问的结果必然在这个子树之外。
+
+这时把子树所形成的集合与当前结点的集合合并，并将当前结点设为这个集合的祖先。之后继续搜索下一棵子树，直到当前结点的所有子树搜索完。这时把当前结点也设为“已被检查过的”，同时可以处理有关当前结点的LCA询问，如果有一个从当前结点到结点$v$的询问，且$v$已被检查过，那么，由于进行的是深度优先搜索，所以当前结点与$v$的最近公共祖先一定还没有被检查，而这个最近公共祖先的包含$v$的子树一定已经搜索过了，因此这个最近公共祖先一定是$v$所在集合的祖先。
+
+\subsection{Tarjan离线算法}
+
+\lstinputlisting{data_structure/lca/tarjan_offline.cpp}
+
+\subsection{RMQ在线算法}
+
+预处理的复杂度为$\mathcal{O}(n\log n)$，查询复杂度为$\mathcal{O}(1)$：\href{https://www.geeksforgeeks.org/lca-n-ary-tree-constant-query-o1}{https://www.geeksforgeeks.org/lca-n-ary-tree-constant-query-o1}。
+
+\lstinputlisting{data_structure/lca/lca_rmq.cpp}
+
+\subsection{倍增算法}
+
+预处理的复杂度为$\mathcal{O}(n\log n)$，查询复杂度为$\mathcal{O}(\log n)$：\href{https://www.geeksforgeeks.org/lca-for-general-or-n-ary-trees-sparse-matrix-dp-approach-onlogn-ologn}{https://www.geeksforgeeks.org/lca-for-general-or-n-ary-trees-sparse-matrix-dp-approach-onlogn-ologn}。
+
+\lstinputlisting{data_structure/lca/lca_sparse_matrix.cpp}

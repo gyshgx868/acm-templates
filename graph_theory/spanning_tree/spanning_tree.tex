@@ -1,0 +1,46 @@
+\paragraph{问题} 要在$n$个城市之间铺设光缆，要求这$n$个城市的任意两个之间都可以通信，然而，铺设光缆的费用很高，且各个城市之间铺设光缆的费用不同，所以还需要使铺设光缆的总费用最低。请问最低费用是多少？
+
+\paragraph{最小生成树} 对于一个无向图来说，最小生成树是一个这样的子图：它内部没有环，各节点之间可以 互相抵达，而且把最小生成树上各边的权值相加之后，得到的和是最小的。
+
+\subsection{Prim}
+
+Prim算法是贪心算法，贪心策略为：找到目前情况下能连上的权值最小的边的另一端点，加入之，直到所有的顶点加入完毕。
+
+Prim适用于稠密图，朴素Prim的时间复杂度是$\mathcal{O}(n^2)$。因为在寻找离生成树最近的未加入顶点时浪费了很多时间，所以可以用堆进行优化。堆优化后的Prim算法的时间复杂度为$\mathcal{O}(m\log n)$。
+
+\lstinputlisting{graph_theory/spanning_tree/prim.cpp}
+
+\subsection{Prim (堆优化)}
+\lstinputlisting{graph_theory/spanning_tree/prim_heap.cpp}
+
+\subsection{Kruskal}
+
+Kruskal算法是贪心算法，贪心策略为：选目前情况下能连上的权值最小的边，若与已经生成的树不会形成环，加入之，直到$n−1$条边加入完毕。
+
+时间复杂度为$\mathcal{O}(n\log m)$，最差情况为$\mathcal{O}(m\log n)$。相比于Prim，这个算法更常用。
+
+\lstinputlisting{graph_theory/spanning_tree/kruskal.cpp}
+
+\subsection{次小生成树}
+
+次小生成树可以由最小生成树换一条边得到。这样就有一种比较容易想到的算法——枚举删除最小生成树上的边，再求最小生成树，然而算法的效率并不是很高。
+
+有一种更简单的方法：先求最小生成树$T$，枚举添加不在$T$中的边，则添加后一定会形成环。找到环上边值第二大的边（即环中属于$T$中的最大边），把它删掉，计算当前生成树的权值，取所有枚举修改的生成树的最小值，即为次小生成树。
+
+这种方法在实现时有更简单的方法：首先求最小生成树$T$，然后从每个结点$u$遍历最小生成树$T$，用一个二维数组$f[u][v]$记录结点$u$到结点$v$的路径上边的最大值（即最大边的值）。然后枚举不在$T$中的边$(u, v)$，计算$T-f[u][v]+w(u,v)$的最小值，即为次小生成树的权值。
+
+显然，这种方法的时间复杂度为$\mathcal{O}(N^2+E)$。
+
+以下的模板需要先求出Prim，然后通过参数传递Prim的值，解出次小生成树。
+
+\paragraph{例题} POJ1679
+
+\lstinputlisting{graph_theory/spanning_tree/2nd_prim.cpp}
+
+\subsection{最小树形图朱刘算法}
+
+\paragraph{最小树形图} “最小生成树”针对的是无向图。换成有向图，则是“最小树形图”。
+
+\paragraph{问题} 在有向带权图中指定一个特殊的点$v$，求一棵以$v$为根的有向生成树$T$，并且$T$中所有边的总权值最小。
+
+\lstinputlisting{graph_theory/spanning_tree/edmonds.cpp}

@@ -1,0 +1,99 @@
+\subsection{相关概念和性质}
+
+\paragraph{点覆盖集} 为一个点集，使得所有边至少有一个端点在集合里，或者说是“点”覆盖了所有“边”。
+
+极小点覆盖（minimal vertex covering）：本身为点覆盖，其真子集都不是。
+
+最小点覆盖（minimum vertex covering）：点最少的点覆盖。
+
+点覆盖数（vertex covering number）：最小点覆盖的点数。
+
+\paragraph{边覆盖集} 为一个边集，使得所有点都与集合里的边邻接。或者说是“边”覆盖了所有“点”。
+
+极小边覆盖（minimal edge covering）：本身是边覆盖，其真子集都不是。
+
+最小边覆盖（minimum edge covering）：边最少的边覆盖。
+
+边覆盖数（edge covering number）：最小边覆盖的边数。
+
+\paragraph{独立集} 为一个点集，集合中任两个结点不相邻，则称$V$为独立集。或者说是导出的子图是零图（没有边）的点集。
+
+极大独立集（maximal independent set）：本身为独立集，再加入任何点都不是。
+
+最大独立集（maximum independent set）：点最多的独立集。
+
+独立数（independent number）：最大独立集的点。
+
+\paragraph{团} 为一个点集，集合中任两个结点相邻。或者说是导出的子图是完全图的点集。
+
+极大团（maximal clique）：本身为团，再加入任何点都不是。
+
+最大团（maximum clique）：点最多的团。
+
+团数（clique number）：最大团的点数。
+
+\paragraph{边独立集} 为一个边集，满足边集中的任两边不邻接。
+
+极大边独立集（maximal edge independent set）：本身为边独立集，再加入任何边都不是。
+
+最大边独立集（maximum edge independent set）：边最多的边独立集。
+
+边独立数（edge independent number)：最大边独立集的边数。
+
+边独立集又称匹配（matching），相应的有极大匹配（maximal matching），最大匹配（maximum matching），匹配数（matching number）。
+
+\paragraph{支配集} 为一个点集，使得所有其他点至少有一个相邻点在集合里。或者说是一部分的“点”支配了所有“点”。
+
+极小支配集（minimal dominating set）：本身为支配集，其真子集都不是。
+
+最小支配集（minimum dominating set）：点最少的支配集。
+
+支配数（dominating number)：最小支配集的点数。
+
+\paragraph{边支配集} 为一个边集，使得所有边至少有一条邻接边在集合里。或者说是一部分的“边”支配了所有“边”。
+
+极小边支配集（minimal edge dominating set）：本身是边支配集，其真子集都不是。
+
+最小边支配集（minimum edge dominating set）：边最少的边支配集。
+
+边支配数（edge dominating number）：最小边支配集的边数。
+
+\paragraph{最小路径覆盖} 是“路径”覆盖“点”，即用尽量少的不相交简单路径覆盖有向无环图$G$的所有顶点，即每个顶点严格属于一条路径。路径的长度可能为0（单个点）。
+
+最小路径覆盖 = $G$的点数 - 最小路径覆盖中的边数。应该使得最小路径覆盖中的边数尽量多，但是又不能让两条边在同一个顶点相交。
+
+拆点：将每一个顶点$i$拆成两个顶点$X_i$和$Y_i$。然后根据原图中边的信息，从$X$部往$Y$部引边。所有边的方向都是由$X$部到$Y$部。因此，所转化出的二分图的最大匹配数则是原图$G$中最小路径覆盖上的边数。因此由最小路径覆盖 = 原图$G$的顶点数 - 二分图的最大匹配数便可以得解。
+
+\subsection{二分图判断}
+
+\paragraph{二分图} 有两顶点集且图中每条边的的两个顶点分别位于两个顶点集中，每个顶点集中没有边直接相连接。
+
+无向图$G$为二分图的充分必要条件是，$G$至少有两个顶点，且其所有回路的长度均为偶数。
+
+判断二分图的常见方法是\textbf{染色法}：开始对任意一未染色的顶点染色，之后判断其相邻的顶点中，若未染色则将其染上和相邻顶点不同的颜色，若已经染色且颜色和相邻顶点的颜色相同则说明不是二分图，若颜色不同则继续判断，BFS和DFS可以搞定。
+
+\begin{itemize}
+  \item 无向图$G$有$n$个顶点，且没有孤立顶点：\\
+  点覆盖数 + 点独立数 = $n$ \\
+  边覆盖数 + 边独立数 = $n$
+  \item 对于二分图$G$有$n$个顶点，且没有孤立顶点：\\
+  点覆盖数 = 匹配数 \\
+  点独立数 = $n$ - 匹配数 \\
+  如果二分图有$m$个孤立顶点：独立数 - $m$ = $n$ - $m$ - 匹配数
+\end{itemize}
+
+\paragraph{例题} HDU2444
+
+\paragraph{注} DFS和BFS判断二分图的方法分别在\textbf{匈牙利算法}的DFS和BFS版本中的is\_valid函数中实现。
+
+\subsection{Hopcroft Karp 算法}
+\lstinputlisting{graph_theory/bipartite_graph/hopcroft_karp.cpp}
+
+\subsection{Kuhn Munkras 算法}
+\lstinputlisting{graph_theory/bipartite_graph/kuhn_munkras.cpp}
+
+\subsection{匈牙利算法 (DFS)}
+\lstinputlisting{graph_theory/bipartite_graph/hungary_dfs.cpp}
+
+\subsection{匈牙利算法 (BFS)}
+\lstinputlisting{graph_theory/bipartite_graph/hungary_bfs.cpp}

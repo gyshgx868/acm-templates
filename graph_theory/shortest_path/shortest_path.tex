@@ -1,0 +1,79 @@
+\subsection{选择方法}
+
+Floyd是多源最短路算法，而另外几种是单源最短路算法。Floyd可以一次性计算任意两个点之间的最短路。
+
+下面按照稀疏图和稠密图来进行分类：
+
+\paragraph{稠密图} 邻接矩阵比邻接表合适。
+
+\begin{itemize}
+	\item 如果$n$不大，可以用邻接矩阵的话，Dijkstra是最好的选择，SPFA也可以；
+	\item $n>300$时最好不要用Floyd算法；
+	\item $n>200$时尽量不要用Bellman-Ford算法。
+\end{itemize}
+
+\paragraph{稀疏图} 邻接矩阵会造成一定的浪费。可能邻接表更合适。
+
+\begin{itemize}
+	\item 超过3000个点就不要用朴素的Dijkstra算法了；
+	\item 边数超过50000时尽量不要用Bellman-Ford算法；
+	\item 超过500000条边就不要用SPFA加邻接表了；
+	\item 点和边数很多的时候，优先队列优化的Dijkstra是更合适的。不过，由于优先队列自身的原因，速度会比堆慢一些。
+\end{itemize}
+
+\begin{table}[htbp]
+	\centering
+	\caption{最短路算法的时间复杂度比较}
+	\begin{tabular}{|c|c|l|}
+		\hline \textbf{算法} & \textbf{图的表示法} & \textbf{时间复杂度} \\ 
+		\hline Dijkstra & 邻接矩阵/邻接表 & $\mathcal{O}(n^2)$ \\ 
+		\hline 优先队列优化的Dijkstra & 邻接表 & 一般$\mathcal{O}[(m+n)\log m]$，密集图$\mathcal{O}(n^2\log m)$ \\ 
+		\hline Bellman Ford & 边目录 & $\mathcal{O}(mn)$ \\ 
+		\hline 优化的Bellman（SPFA） & 邻接表 & $\mathcal{O}(km)$，其中$k$可认为是常数 \\ 
+		\hline Floyd & 邻接矩阵 & $\mathcal{O}(n^3)$ \\ 
+		\hline 
+	\end{tabular}
+\end{table}
+
+\subsection{Dijkstra (邻接矩阵)}
+
+注意：Dijkstra算法只适用于所有边的权都大于0的图。
+
+Dijkstra算法是贪心算法。基本思想是：设置一个顶点的集合$S$，并不断地扩充这个集合，当且仅当从源点到某个点的路径已求出时它才属于集合$S$。开始时$S$中仅有源点，调整$S$集合之外的点的最短路径长度，并从中找到当前最短路径点，将其加入到集合$S$，直到所有的点都在$S$中。
+
+普通算法的时间复杂度为$\mathcal{O}(n^2)$。不过还有优化的余地。
+
+\lstinputlisting{graph_theory/shortest_path/dijkstra.cpp}
+
+\subsection{Dijkstra (堆优化)}
+\lstinputlisting{graph_theory/shortest_path/dijkstra_heap.cpp}
+
+\subsection{Bellman Ford}
+
+Bellman Ford算法是迭代法，它不停地调整图中的顶点值（源点到该点的最短路径值），直到没有可调整的值。
+
+该算法除了能计算最短路，还可以检查负环（一个每条边的权都小于0的环）把每条边的权取一个相反数，就可以判断图中是否有正环了。如果图中有负环，那么这个图不存在最短路。时间复杂度为$\mathcal{O}(VE)$。
+
+\lstinputlisting{graph_theory/shortest_path/bellman_ford.cpp}
+
+\subsection{Floyd Warshall}
+
+Floyd算法是动态规划算法。设$f(i,j)$表示从$i$到$j$的最短路径长度，则$f(i,j)=\min \left\{ f(i, k) + f(k, j) \right\}$（其中$i$到$k$、$k$到$j$都是连通的）。时间复杂度为$\mathcal{O}(n^3)$，适用于反复查询任意两点的最短距离。 
+
+\lstinputlisting{graph_theory/shortest_path/floyd_warshall.cpp}
+
+\subsection{SPFA}
+
+Bellman Ford在迭代时会有一些冗余的松弛操作，SPFA则通过队列对其进行了一个优化。时间复杂度为$\mathcal{O}(kE)$，其中$k$为所有顶点进队的平均次数，一般情况下$k \leq 2$。
+
+\lstinputlisting{graph_theory/shortest_path/spfa.cpp}
+
+栈优化版本SPFA:
+
+\lstinputlisting{graph_theory/shortest_path/spfa_stack.cpp}
+
+\subsection{K短路}
+
+\paragraph{例题} POJ2449
+
+\lstinputlisting{graph_theory/shortest_path/k_shortest_path.cpp}

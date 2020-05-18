@@ -1,0 +1,32 @@
+\subsection{Size Balanced Tree (SBT)}
+\lstinputlisting{data_structure/balanced_tree/sbt.cpp}
+
+\subsection{伸展树 (Splay Tree)}
+\lstinputlisting{data_structure/balanced_tree/splay.cpp}
+
+\subsection{C++的set和map}
+
+map（映射）、multimap（多重映射）、set（集合）、multiset（多重集合）属于关联容器，头文件分别位于<map>和<set>中。
+
+map和set的区别：set实际上就是一组元素的集合，但其中所包含的元素的值是唯一的，且是按一定顺序排列的。集合中的每个元素被称作集合中的实例。其内部通过链表的方式来组织；而map提供一种“键—值”关系的一对一的数据存储能力，类似于字典。其“键”在容器中不可重复，且按一定顺序排列。由于其是按链表的方式存储，它也继承了链表的优缺点。
+
+multiset和set不同之处在于，multiset中元素的值可以不唯一。multimap也类似，在multimap中“键”可以不唯一。
+
+关联容器的特点：
+
+\begin{enumerate}
+  \item 关联容器对元素的插入和删除操作比vector快，但比list慢；
+  \item 关联容器对元素的检索操作比vector慢，但是比list要快很多。关联容器查找的复杂度基本是$\mathcal{O}(\log n)$；
+  \item set是内部排序的，这与序列容器有着本质的区别。
+\end{enumerate}
+
+用法详见第三章STL。
+    
+\subsection{Treap}
+\lstinputlisting{data_structure/balanced_tree/treap.cpp}
+
+\subsection{替罪羊树}
+
+替罪羊树是计算机科学中，一种基于部分重建的自平衡二叉搜索树。在替罪羊树上，插入或删除节点的平摊最坏时间复杂度是$\mathcal{O}(\log n)$，搜索节点的最坏时间复杂度是$\mathcal{O}(\log n)$。
+
+\lstinputlisting{data_structure/balanced_tree/scapegoat_tree.cpp}

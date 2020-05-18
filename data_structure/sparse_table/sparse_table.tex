@@ -1,0 +1,22 @@
+RMQ（Range Minimum/Maximum Query）问题是指：已知长度为$n$的数列$A$，需要查询某个区间的最值若干次。
+
+由于询问次数很多，并且区间范围不确定，因此采用朴素算法是不可行的。若采用线段树，预处理的时间为$\mathcal{O}(n)$，查询的时间是$\mathcal{O}(\log n)$。并且，如果规定数列元素可以更改，那么基本上只能用线段树来处理。这种情况下，该算法不可用。
+
+RMQ是在线算法，预处理的时间为$\mathcal{O}(n\log n)$，但回答一次询问的仅为$\mathcal{O}(1)$。
+
+\subsection{RMQ}
+
+\lstinputlisting{data_structure/sparse_table/sparse_table.cpp}
+
+\paragraph{注} 可以将上述代码中的Min替换为Max或者gcd来维护区间最小值或者最大公约数，仿函数的写法如下：
+
+\lstinputlisting{data_structure/sparse_table/operation.cpp}
+
+\subsection{RMQ 维护区间和}
+\lstinputlisting{data_structure/sparse_table/sum_sparse_table.cpp}
+
+\subsection{2D RMQ}
+
+\paragraph{例题} HDU2888（该题需要将vector替换为数组，否则会MLE）
+
+\lstinputlisting{data_structure/sparse_table/sparse_table_2d.cpp}

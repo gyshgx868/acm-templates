@@ -1,0 +1,41 @@
+\subsection{素数判断}
+
+\paragraph{例题} HDU2138
+
+\lstinputlisting{math/number_theory/prime/is_prime.cpp}
+
+\subsection{筛法求素数}
+\lstinputlisting{math/number_theory/prime/sieve_eratosthenes.cpp}
+
+\subsection{区间筛素数}
+
+筛选区间$[l,r)$中的素数，is\_prime[i-l]=true <=> $i$是素数（下标偏移了$l$）。
+
+\lstinputlisting{math/number_theory/prime/sieve_interval.cpp}
+
+\subsection{素数计数}
+
+\paragraph{例题} HDU5901
+
+\lstinputlisting{math/number_theory/prime/count_primes.cpp}
+
+\subsection{区间求互质数(容斥原理)}
+
+求$[1,r]$内与$n$互素的数的个数。
+
+\paragraph{注} 需要分解质因数函数get\_factors。
+
+\paragraph{例题} HDU4135
+
+\lstinputlisting{math/number_theory/prime/find_coprime.cpp}
+
+\subsection{Miller Rabin}
+
+不断选取不超过$n-1$的底数$a$，每次判断是否为$a^{n-1}\equiv 1(\mod n)$。如果有一次不成立，则$n$为合数，否则基本上可以断定为素数（仍然有合数的可能）。
+
+\paragraph{注} 需要快速幂算法quick\_pow，以及快速乘法quick\_mul。
+
+\lstinputlisting{math/number_theory/prime/miller_rabin.cpp}
+
+\subsection{反素数表}
+\lstinputlisting{math/number_theory/prime/emirps.cpp}

@@ -1,0 +1,77 @@
+\subsection{部分背包}
+
+\paragraph{问题} 有$n$件物品和一个容量为$C$的背包。第$i$件物品的重量是$w_i$，价值是$v_i$。每个物体可以\textbf{取走一部分}，\textbf{价值和重量按比例计算}。求解将哪些物品装入背包可使价值总和最大。
+
+\paragraph{思路} 贪心算法，将背包按照单价（价值/重量的比值）排序。从物美价廉（单价尽可能大）的物体开始挑起，直到背包装满或没有物体可拿。
+
+\subsection{0/1 背包}
+
+\paragraph{问题} 有$n$件物品和一个容量为$C$的背包，第$i$件物品的重量是$w_i$，价值是$v_i$。求解将哪些物品装入背包可使价值总和最大。
+
+\paragraph{例题} HDU2602
+
+\paragraph{二维数组表示} 令$f[i][c]$表示前$i$件物品\textbf{恰好}\footnote{如果一开始将各元素初始化为$-1$或某个特定的数值，那么本算法将可以用于检测是否有解。}放入一个容量为$c$的背包之后可以获得的最大价值。则：
+
+\begin{equation}
+  f[i][c]=\max\left\{f[i-1][c], f[i-1][c-w_i]+v_i\right\}
+\end{equation}
+
+\lstinputlisting{dynamic_programming/knapsack/01_knapsack_2d.cpp}
+
+\paragraph{一维数组表示} 上面的递推过程用一维数组也可以表示：
+
+\begin{equation}
+  f[c] = \max\left\{f[c], f[c-w_i]+v_i\right\}
+\end{equation}
+
+\lstinputlisting{dynamic_programming/knapsack/01_knapsack_1d.cpp}
+
+\subsection{完全背包}
+
+\paragraph{问题} 有$n$\textbf{种}物品和一个容量为$C$的背包。第$i$种物品的重量是$w_i$，价值是$v_i$，\textbf{数量无限}。求解将哪些物品装入背包可使价值总和最大。
+
+\paragraph{思路} 二维状态转移方程为 
+
+\begin{equation}
+  f[i][c]=\max \left\{
+    \begin{array}{l}
+      f[i-1][c], \\
+      f[i][c-w_i]+v_i
+    \end{array}
+  \right.
+\end{equation}
+
+考虑到递推过程，可转化为一维数组，即
+
+\begin{equation}
+  f[c]=\max\left\{f[c],f[c-w_i]+v_i\right\}
+\end{equation}
+
+\paragraph{例题} 洛谷P1616（疯狂的采药）
+
+\lstinputlisting{dynamic_programming/knapsack/unbounded_knapsack.cpp}
+
+注意：
+
+\begin{itemize}
+  \item 内外层的for可以互换；
+  \item 与0/1背包不同的是，本代码中$c$是从小到大循环的。
+\end{itemize}
+
+\subsection{多重背包}
+
+\paragraph{问题} 有$n$种物品和一个容量为$C$的背包。第$i$种物品的重量是$w_i$，价值是$v_i$，\emph{数量为$a_i$}。求解将哪些物品装入背包可使价值总和最大。
+
+\paragraph{思路} 此类题采用二进制法，即按照二进制的数量级 ($1, 2, 4, 8, \ldots$) 对$a_i$进行分割，使问题转化为0/1背包问题。
+
+\lstinputlisting{dynamic_programming/knapsack/bounded_knapsack.cpp}
+
+\subsection{二维费用背包}
+
+\paragraph{问题} 有$n$件物品和一个容量为$C$、\textbf{容积为$U$} 的背包。第$i$件物品的重量是$w_i$，\textbf{体积是$u_i$}，价值是$v_i$。求解将哪些物品装入背包可使价值总和最大。
+
+\paragraph{思路} 费用加了一维，那么把状态也加一维就可以了。此外，限制种类个数的背包和此问题本质相同 (把数量看做容积即可)。
+
+\paragraph{例题} 洛谷P1855
+
+\lstinputlisting{dynamic_programming/knapsack/cost_knapsack.cpp}

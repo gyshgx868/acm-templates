@@ -1,0 +1,45 @@
+\paragraph{问题} 有$n$项工作，其中某些工作必须在另外一些工作进行之前完成，请安排一个顺序，使得这些工作能够顺利完成。
+
+\paragraph{例} 有四项工作1、2、3、4，其中3必须在2的前面，4必须在3的前面，那么1、4、3、2是一种合法的安排。
+
+\paragraph{拓扑排序} 很明显，如果图中存在有向环，则排序无法完成，否则就可以得到一个序列。
+
+\subsection{DFS 判环}
+
+\paragraph{例题} HDU3342
+
+\lstinputlisting{graph_theory/topology/has_circle_dfs.cpp}
+
+\subsection{拓扑排序}
+
+\paragraph{例题} HDU1285
+
+\lstinputlisting{graph_theory/topology/topo_sort.cpp}
+
+\subsection{BFS 判环}
+
+操作步骤如下：
+
+\begin{enumerate}
+  \item 统计每个结点的入度；
+  \item 将入度为零的点加入队列；
+  \item 依次对入度为零的点进行删边操作，同时将新得到的入度为零的点加入队列；
+  \item 继续对队列中未进行操作的点进行操作；
+  \item 如果排序结束，但仍然存在入度不为0的点，说明图中有环。
+\end{enumerate}
+
+\lstinputlisting{graph_theory/topology/has_circle_bfs.cpp}
+
+\subsection{拓扑排序计数}
+
+已知有$n$（$n<17$）个元素，其中某些元素必须在另外一些元素的前面。求有多少种排列方法。
+
+此题是NPC问题，没有多项式时间的解法。需要用动态规划的思想来进行搜索，且需要进行状态压缩。
+
+设$f(G)$表示图$G$的拓扑排序数。以图上某一个点$p_0$为例，如果该点入度为0，那么就会有$f({G - p_0})$种方案（${G - p_0}$指去掉$p_0$之后的子图），使得该点处于拓扑排序序列的第一位上面。所以需要枚举图上的每一个点$p$，求出$f(G - p)$的总和，这个总和即位拓扑排序数。
+
+边界条件：如果子图$S$只有一个点，那么$f(S) = 1$。
+
+\paragraph{例题} ZOJ1346
+
+\lstinputlisting{graph_theory/topology/topo_count.cpp}

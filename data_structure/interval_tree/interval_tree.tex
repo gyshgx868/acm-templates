@@ -1,0 +1,24 @@
+\subsection{线段树}
+\lstinputlisting{data_structure/interval_tree/interval_tree.cpp}
+
+\subsection{区间求和}
+
+使用下面的模板类特化IntervalTree中的Op：IntervalTree<int, SumOperation<int> >。
+
+\paragraph{例题} HDU1166（单点更新区间求和）
+
+\lstinputlisting{data_structure/interval_tree/sum_interval_tree.cpp}
+
+\subsection{区间求最值}
+
+\paragraph{例题} HDU1754（单点更新区间求最大值）
+
+\paragraph{注} 下面的模板为区间求最大值，若需要更改为区间最小值，则需要将max函数改为min，并将最小值的初始化改为最大值。
+
+\lstinputlisting{data_structure/interval_tree/extremum_interval_tree.cpp}
+
+\subsection{二维线段树单点更新区间求和}
+
+\paragraph{例题} POJ1195
+
+\lstinputlisting{data_structure/interval_tree/interval_tree_2d.cpp}

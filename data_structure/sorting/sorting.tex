@@ -1,0 +1,31 @@
+\subsection{快速排序}
+
+快速排序的时间复杂度为$\mathcal{O}(n\log n)$，但是极端情况（数据基本有序）下会退化成$\mathcal{O}(n^2)$。因此建议使用STL的sort()函数。STL的sort()与上面代码相比，具有以下特点：
+
+\begin{itemize}
+  \item 数据量大时采用分段递归排序，即快速排序。在取分隔点时，取的是头部、尾部和中央三个元素的中间值；
+  \item 数据量变小的时候，采用插入排序代替快速排序；
+  \item 此外，快速排序是不稳定的排序算法；
+  \item 如果递归层次过深，会改用堆排序。
+\end{itemize}
+
+\lstinputlisting{data_structure/sorting/quick_sort.cpp}
+
+\subsection{归并排序}
+
+归并排序的时间复杂度为$\mathcal{O}(n\log n)$，但是空间复杂度很大，为$\mathcal{O}(n)$。归并排序是稳定的排序算法，即数值相同时，元素的相对位置不会发生改变。STL的stable\_sort()采用了归并排序算法。
+
+\lstinputlisting{data_structure/sorting/merge_sort.cpp}
+
+\subsection{堆排序}
+
+堆排序的时间复杂度为$\mathcal{O}(n\log n)$。但是由于该算法常数因子有些大，因此它比快速排序慢很多。不过它不需要递归，所以不怕爆栈。堆排序的思路：
+
+\begin{enumerate}
+  \item 将整个数组转化为一个堆。如果想把一串数从小到大排序，则需要使用最大值堆1；
+  \item 将堆顶的最大元素取出，并把它放到数组的最后；
+  \item 剩余元素重新建堆；
+  \item 重复第2步，直到堆为空。
+\end{enumerate}
+
+\lstinputlisting{data_structure/sorting/heap_sort.cpp}

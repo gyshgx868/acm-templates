@@ -1,0 +1,10 @@
+对于一个序列$a_1, a_2, a_3, ... , a_n$，如果存在$i<j$，使$a_i>a_j$，那么$(a_i,a_j)$就是一个逆序对。
+
+\subsection{逆序对 (归并排序)}
+\lstinputlisting{data_structure/inversion/inversion_merge_sort.cpp}
+
+\subsection{逆序对 (树状数组)}
+
+由于我们只是看两个数之间的大小关系，所以可以对序列中的数进行离散化。即按照大小关系把$a_1$到$a_n$映射到1至num之间（num为不同数字的个数），保证仍然满足原有的大小关系。这样，本题就转化成了：对于一个数$a_i$，在它后面有多少个比它小的数。
+
+\lstinputlisting{data_structure/inversion/inversion_fenwick_tree.cpp}

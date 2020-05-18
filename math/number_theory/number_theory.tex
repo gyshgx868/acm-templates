@@ -1,0 +1,247 @@
+\subsection{GCD和LCM}
+
+求两个数的最大公约数的基本思想：$\gcd(a,b)=\gcd(b,a\mod b)$
+
+两个数的最大公约数和最小公倍数的关系为 $\gcd(a,b) \times \operatorname{lcm}(a,b)=a \times b$，因此可以通过 $\operatorname{lcm}(a,b) = a \times b \div \gcd(a,b)$ 来求出最小公倍数。
+
+如果求多个数值的最大公约数或最小公倍数，可以先求出前两个数的值，然后再将结果和第三个数一起求值。
+
+\lstinputlisting{math/number_theory/gcd_lcm.cpp}
+
+\subsection{扩展欧几里得}
+
+以下算法用于求$ax+by=\gcd(a,b)$的一组整数解。注意，方程的解不是唯一的，因为使$x$增加若干个$b$，使$y$减少同等数量的$a$，结果还是不变的。
+
+按照求解最大公约数的基本思想，我们可以得到一个式子。与原方程联立，则有
+
+\begin{equation}
+  \left\{
+    \begin{array}{l}
+      ax_{1}+by_{1}=\gcd(a,b) \\
+      bx_{2}+(a\%b)y_{2}=\gcd(b,a\%b)
+    \end{array}
+  \right.
+\end{equation}
+
+很明显，等号右面的两个值是相等的，而且有 $a\%b=a-(a/b) \times b$，那么
+
+\begin{equation}
+  ax_{1}+by_{1}=bx_{2}+[a-(a/b) \times b] \times y_{2}
+\end{equation}
+
+也就是
+
+\begin{equation}
+  ax_{1}+by_{1}=ay_{2}+b[x_{2}-(a/b)y_{2}]
+\end{equation}
+
+由于等式是恒成立的，所以可以得出
+
+\begin{equation}
+  x_{1}=y_{2},\; y_{1}=x_{2}-(a/b) \times y_{2}
+\end{equation}
+
+\lstinputlisting{math/number_theory/extended_gcd.cpp}
+
+\subsection{快速幂}
+
+假设$a$，$b$均为整数，且$b>0$。怎样计算$a^b$的值？
+
+当然可以使用<cmath>里的pow函数，不过在取整的时候要注意在结果上加一个小数（比方说pow(2,10)，正确答案是$1024$，但是由于C++的浮点数存在误差，所以最终结果可能是$1024.00000001$，也可能是$1023.99999999$。对于后者来说，如果直接取整，那么结果就会变成$1023$），即：
+
+\begin{lstlisting}
+int r = int(pow(2,10) + 0.0001);
+\end{lstlisting}
+
+我们也可以使用for循环来计算$a^b$，时间复杂度$\mathcal{O}(b)$。显然，这个时间复杂度较高。
+
+实际上我们可以把 $b$ 按照二进制来分解。以 $b=77$ 为例，$77=(1001101)_{2}=2^{6}+2^{3}+2^{2}+2^{0}$。求和的过程可以通过递推来完成，即 $77=(((((1\times 2+0)\times 2+0)\times 2+1)\times 2+1)\times 2+0)\times 2+1$。这样时间复杂度就缩小到 $\mathcal{O}(\log b)$了。
+
+这时，我们就可以通过递推把$a^{1}$，$a^{4}$，$a^{8}$，$a^{64}$算出来，然后将它们组合成结果。
+
+\lstinputlisting{math/number_theory/quick_pow.cpp}
+
+类似的思想还可以用于求$a^{1}+a^{2}+a^{3}+a^{4}+ \cdots +a^{n}$的和，如：
+
+\begin{equation}
+  a^{1}+a^{2}+a^{3}+\cdots +a^{{16}}=a^{8}(a^{1}+a^{2}+\cdots +a^{8})+(a^{1}+a^{2}+\cdots +a^{8})
+\end{equation}
+
+\subsection{Java大数快速幂}
+
+\begin{lstlisting}
+public static BigInteger quickPow(BigInteger x, BigInteger n, BigInteger m) {
+  BigInteger ret = BigInteger.ONE;
+  while (n.compareTo(BigInteger.ZERO) == 1) {
+    if (n.mod(BigInteger.valueOf(2)).equals(BigInteger.ONE)) {
+      ret = ret.multiply(x).mod(m);
+    }
+    x = x.multiply(x).mod(m);
+    n = n.divide(BigInteger.valueOf(2));
+  }
+  return ret;
+}
+\end{lstlisting}
+
+\subsection{快速乘法}
+\lstinputlisting{math/number_theory/quick_mul.cpp}
+
+\subsection{BSGS}
+
+BSGS（Baby Steps Giant Steps），即大小步算法。
+
+\subsubsection{普通版本}
+
+给定素数$P$，$2 \leq P < 2^{31}$，整数$B$，$2 \leq B < P$，和整数$N$，$1 \leq N < P$，求解整数$L$使其满足：
+
+\begin{equation}
+  B^L \equiv N \pmod P
+\end{equation}
+
+\paragraph{例题} POJ2417
+
+\paragraph{注} 该算法需要HashTable。
+
+\lstinputlisting{math/number_theory/bsgs.cpp}
+
+\subsubsection{扩展版本}
+
+给定整数$B$，$N$，$P$，求解整数$L$使其满足：
+
+\begin{equation}
+  B^L \equiv N \pmod P
+\end{equation}
+
+\paragraph{例题} POJ3243
+
+\paragraph{注} 该算法需要HashTable，扩展欧几里得函数extended\_gcd，和求解最大公约数函数gcd。
+
+\lstinputlisting{math/number_theory/extended_bsgs.cpp}
+
+\subsection{欧拉函数}
+\lstinputlisting{math/number_theory/euler.cpp}
+
+\subsection{欧拉函数打表}
+
+\paragraph{例题} HDU2824
+
+\lstinputlisting{math/number_theory/euler_table.cpp}
+
+\subsection{分解质因数}
+\lstinputlisting{math/number_theory/factors.cpp}
+
+\subsection{Pollard Rho}
+
+\paragraph{例题} POJ1811
+
+\paragraph{注} 需要Miller Rabin素数测试函数miller\_rabin，求解最大公约数函数gcd，快速乘函数quick\_mul，以及经过快速乘改写的快速幂函数quick\_pow。
+
+\lstinputlisting{math/number_theory/pollard_rho.cpp}
+
+\subsection{因数个数打表}
+
+打表区间$[1,n]$中所有数的因子的个数。
+
+\lstinputlisting{math/number_theory/count_factors.cpp}
+
+\subsection{线性同余方程}
+
+\paragraph{问题} 如何求$ax \equiv b \pmod n \; (n>0)$的解？如果有解，有几个解？\footnote{假如存在$x_{0}$ 使 $ax_{0} \equiv b \pmod n$成立，那么很明显，$x_{0}+kn \; (k\in \mathbb{Z})$ 也可以使式子成立。在数论中，我们认为这是一个解。}
+
+设$y$是一个整数，那么上述式子就可以转化为$ax-ny=b$，也就是说，如果上面那个方程有解，那么这个二元方程也必须有解。为了利用扩展欧几里得算法，我们要对方程稍作转化。令$d=\gcd(a,n)$，我们先求解$ax-ny=d$（若使方程有解，需要$d$能够整除$b$），可知这个$x$乘上$\frac{b}{d}$就是其中的一个解。
+
+此方程共有$d$个解，这些解相差$\frac{n}{d}$的整数倍。求出一个解之后，其他解也就能求出来了。
+
+\paragraph{注} 该算法需要扩展欧几里得函数extended\_gcd。
+
+\lstinputlisting{math/number_theory/linear_congruence_mod_equation.cpp}
+
+\subsection{中国剩余定理}
+
+\paragraph{问题} 一个数，被3除余1，被5除余2，被7除余3，那么这个数是多少？
+
+\subsubsection{互质情况}
+
+设$m_1, m_2, \cdots, m_k$ \textbf{两两互素}，则下面同余方程组
+
+\begin{equation}
+  \begin{array}{c}
+    x \equiv a_1 \pmod{m_1} \\
+    x \equiv a_2 \pmod{m_2} \\
+    \vdots \\
+    x \equiv a_k \pmod{m_k}
+  \end{array}
+\end{equation}
+
+令$M=m_1m_2 \cdots m_k$，则方程组在$0 \leq x < M$内有唯一解。
+
+\paragraph{例} POJ1006
+
+\paragraph{注} 该算法需要扩展欧几里得函数extended\_gcd。
+
+\lstinputlisting{math/number_theory/chinese_remainder_theorem_coprime.cpp}
+
+\subsubsection{非互质情况}
+
+先考虑两组方程的情况：
+
+\begin{equation}
+  \begin{array}{l}
+    x \equiv a_1 \pmod{m_1} \\
+    x \equiv a_2 \pmod{m_2}				
+  \end{array}
+\end{equation}
+
+有解的充要条件是 $\gcd(m_1, m_2) | (a_1-a_2)$。如果有解，先将以上二式转化：
+
+\begin{equation}
+  \begin{array}{l}
+    x = a_1 + m_1 y	\\
+    x = a_2 + m_2 z
+  \end{array}
+\end{equation}
+
+联立得$a_1 + m_1 y = a_2 + m_2 z$。令$c=\gcd(m_1, m_2)$，则
+
+\begin{equation}
+  \frac{m_2}{c}z - \frac{m_1}{c}y = \frac{a_1-a_2}{c}
+\end{equation}
+
+然后用扩展的欧几里得算法求出$p$和$q$，使得
+
+\begin{equation}
+  \frac{m_2}{c}p + \frac{m_1}{c}q = \gcd\left(\frac{m_2}{c},\frac{m_1}{c}\right)=1
+\end{equation}
+
+那么只要取 $z=p\times(a_1-a_2)/c$，则 $x=a_2+m_2z$。
+
+对于$m_i$不是两两互素的情况，可以每次解两个方程，然后将两方程合并。
+
+\paragraph{例题} POJ2891
+
+\paragraph{注} 该算法需要扩展欧几里得函数extended\_gcd。
+
+\lstinputlisting{math/number_theory/chinese_remainder_theorem_noncoprime.cpp}
+
+\subsection{莫比乌斯函数}
+
+\paragraph{例题} GYM101982B
+
+\lstinputlisting{math/number_theory/mobius.cpp}
+
+\subsection{原根}
+
+\paragraph{例题} HDU4992
+
+\paragraph{注} 该算法需要筛法求质数函数sieve\_euler，求解最大公约数函数gcd，欧拉函数euler，快速幂函数quick\_pow，分解质因数函数get\_factors。
+
+\lstinputlisting{math/number_theory/primitive_root.cpp}
+
+\subsection{快速傅里叶变换 (FFT)}
+\lstinputlisting{math/number_theory/fft.cpp}
+
+\subsection{快速数论变换 (NTT)}
+
+\paragraph{注} 该算法需要快速幂函数quick\_pow。
+
+\lstinputlisting{math/number_theory/ntt.cpp}

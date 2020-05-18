@@ -1,0 +1,69 @@
+\subsection{基本二叉堆}
+
+二叉堆：二叉堆是完全二叉树。按照树根大小，二叉堆可分为最大值堆和最小值堆。
+
+二叉堆的特点：
+
+\begin{enumerate}
+  \item 最大（小）值堆中，结点一定不小（大）于两个儿子的值；
+  \item 在堆中，两兄弟的大小没有必然联系；
+  \item 最大（小）值堆的根结点是整个树中的最大（小）值。
+\end{enumerate}
+
+由于是完全二叉树，所以可以直接用一维数组保存。数组的下标是从0开始的。
+
+二叉堆的操作有：
+
+\begin{enumerate}
+  \item 插入：在堆中插入元素，首先要把元素放到末尾，然后通过不断往上“拱”，把元素“拱”到正确的位置；
+  \item 用现有值初始化：最快的方法不是挨个插入，而是直接调整数组元素的顺序，使其符合堆的性质；
+  \item 查找：查找最值是最快的——直接访问树根就可以了。不过，用堆查找其他值就很慢了。因此，可以考虑再使用一个适合查找的辅助数据结构，例如二叉排序树；
+  \item 删除：把堆中最后一个元素 (就是一维数组存储所对应的最后一个元素) 放到待删除元素的位置，将元素总数减1，然后调整各元素的顺序。
+\end{enumerate}
+
+\lstinputlisting{data_structure/binary_heap/heap.cpp}
+
+\subsection{STL中的堆算法}
+
+为了实现堆算法，需要一个支持随机迭代器的容器。当然，一维数组也可以。
+
+下面各函数的comp用于代替默认的小于号。如果不需要，可以省略。如果不指明，那么堆中第一个元素的值是最大值。区间为左闭右开区间。
+
+\begin{itemize}
+  \item make\_heap(begin, end, comp)：将某区间内的元素转化为堆。时间复杂度$\mathcal{O}(n)$。
+  \item push\_heap(begin, end, comp)：假设[begin, end - 1)已经是一个堆。现在将end之前的那个元素加入堆中，使区间[begin, end)重新成为堆。时间复杂度$\mathcal{O}(\log n)$。
+  \item pop\_heap(begin, end, comp)：从区间[begin, end)取出第一个元素，放到最后位置，然后将区间[begin, end - 1)重新组成堆。时间复杂度$\mathcal{O}(\log n)$。
+  \item sort\_heap(begin, end, comp)：将heap转换为一个有序集合。时间复杂度$\mathcal{O}(n\log n)$。
+\end{itemize}
+
+\subsection{STL中的优先队列}
+
+priority\_queue基于vector实现（模板接受三个参数，第二个就是容器类型。一般使用vector，也可使用deque）。普通的队列是先进先出，而优先队列是按照优先级出队，即无论入队顺序如何，出队的都是最大（最小）值。
+
+priority\_queue位于<queue>，而greater和less存在于<functional>。
+
+可以用以下几种方式定义优先队列（假设arr是一个有10个元素的数组）：
+
+\begin{lstlisting}
+// 元素为int类型，最大值先出列。
+priority_queue<int> q1;
+// 元素为int类型，最小值先出列。 注意两个 > 之间有空格。
+priority_queue<int, vector<int>, greater<int> > q2;
+// 元素为float类型，最大值先出列，用现有数组初始化。
+priority_queue<float> q3(arr, arr + 10);
+\end{lstlisting}
+
+优先队列支持的操作有：push、top（不是 front）、pop、empty和size。
+
+如果需要使用自己的结构体，你需要重载复制构造函数和“>”或“<”运算符。 less对应“<”，表示最大值先出列；greater对应“>”，表示最小值先出列。
+
+\begin{lstlisting}
+struct MyStruct {
+  int v;
+  MyStruct(int i) : v(i) {}
+  bool operator <(const MyStruct& b) const {
+    return v < b.v;
+  }
+};
+priority_queue<MyStruct, vector<MyStruct>, less<MyStruct> > q;
+\end{lstlisting}
