@@ -1,33 +1,38 @@
-inline double f(double x) {
-  // 函数体
-}
+class Romberg {
+ public:
+  explicit Romberg(std::function<double(double)> f) : func(std::move(f)) {}
 
-double integrate(double l, double r, double eps) {
-  std::vector<double> t;
-  double h = r - l, last, curr;
-  int k = 1, i = 1;
-  t.push_back(h * (f(l) + f(r)) / 2);
-  do {
-    last = t.back();
-    curr = 0;
-    double x = l + h / 2;
-    for (int j = 0; j < k; j++) {
-      curr += f(x);
-      x += h;
-    }
-    curr = (t[0] + h * curr) / 2;
-    double k1 = 4.0 / 3, k2 = 1.0 / 3;
-    for (int j = 0; j < i; j++) {
-      double temp = k1 * curr - k2 * t[j];
-      t[j] = curr;
-      curr = temp;
-      k2 /= 4 * k1 - k2;
-      k1 = k2 + 1;
-    }
-    t.push_back(curr);
-    k *= 2;
-    h /= 2;
-    i++;
-  } while (fabs(last - curr) > eps);
-  return t.back();
-}
+  double integrate(double left, double right, double eps = 1e-6) const {
+    double len = right - left;
+    std::vector<double> terms;
+    terms.push_back(len * (func(left) + func(right)) / 2);
+    double last, cur;
+    int k = 1, i = 1;
+    do {
+      last = terms.back();
+      cur = 0;
+      double x = left + len / 2;
+      for (int j = 0; j < k; j++) {
+        cur += func(x);
+        x += len;
+      }
+      cur = (terms[0] + len * cur) / 2;
+      double k1 = 4.0 / 3, k2 = 1.0 / 3;
+      for (int j = 0; j < i; j++) {
+        double temp = k1 * cur - k2 * terms[j];
+        terms[j] = cur;
+        cur = temp;
+        k2 /= 4 * k1 - k2;
+        k1 = k2 + 1;
+      }
+      terms.push_back(cur);
+      k *= 2;
+      len /= 2;
+      i++;
+    } while (fabs(last - cur) > eps);
+    return terms.back();
+  }
+
+ private:
+  std::function<double(double)> func;
+};
