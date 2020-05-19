@@ -15,14 +15,28 @@ class Graph {
     head[u] = to.size() - 1;
   }
 
+  virtual void remove_edge(int u, int v) {
+    int prev = -1;
+    for (int i = head[u]; i != -1; i = next[i]) {
+      if (to[i] == v) {
+        if (prev == -1) {
+          head[u] = next[head[u]];
+        } else {
+          next[prev] = next[i];
+        }
+      }
+      prev = i;
+    }
+  }
+
   virtual void add_undirected_edge(int u, int v, T w = T()) {
     add_edge(u, v, w);
     add_edge(v, u, w);
   }
 
-  virtual void add_flow_edge(int u, int v, T w = T()) {
-    add_edge(u, v, w);
-    add_edge(v, u, T());
+  virtual void remove_undirected_edge(int u, int v) {
+    remove_edge(u, v);
+    remove_edge(v, u);
   }
 
   int first_out_bound(int u) const { return head[u]; }
