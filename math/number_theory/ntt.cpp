@@ -1,17 +1,18 @@
-/*
- * 模 M 域下的快速数论变换
- * M = C * 2 ^ NUM + 1, NUM > log(N), N 为数组大小
- * 若改 M 的值需要同时改 G 的值为 M 的原根
- */
-const int M = 998244353, G = 3;
-// 注意将以下乘号换成快速乘
-// const ll M = 274877920265LL * (1LL << 23) + 1, G = 3;
+namespace ntt {
 
-void rader(std::vector<long long> &a) {
-  int len = a.size();
-  for (int i = 1, j = len / 2; i < len - 1; i++) {
+/*
+ * 模 mod 域下的快速数论变换
+ * 若改 mod 的值需要同时改 G 的值为 mod 的原根
+ */
+const int G = 3;
+const int mod = 998244353;
+
+template <class T>
+void rader(std::vector<T>& a) {
+  int len = a.size(), half_len = a.size() / 2;
+  for (int i = 1, j = half_len; i < len - 1; i++) {
     if (i < j) { std::swap(a[i], a[j]); }
-    int k = len >> 1;
+    int k = half_len;
     while (j >= k) {
       j -= k;
       k /= 2;
@@ -20,51 +21,53 @@ void rader(std::vector<long long> &a) {
   }
 }
 
-void ntt(std::vector<long long> &a, const std::vector<long long> &wn,
-         int mod, bool invert) {
+template <class T>
+void transform(std::vector<T>& a, bool invert) {
+  static std::vector<T> wn;
+  if (wn.empty()) {
+    wn.resize(64);
+    for (int i = 0; i < 64; i++) {
+      wn[i] = quick_pow(G, (mod - 1) / (1LL << i), mod);
+    }
+  }
   rader(a);
   int len = a.size();
-  for (int h = 2, id = 1; h <= len; h <<= 1, ++id) {
+  for (int h = 2, id = 1; h <= len; h *= 2, id++) {
+    int half = h / 2;
     for (int j = 0; j < len; j += h) {
-      long long w = 1;
-      for (int k = j; k < j + (h >> 1); k++) {
-        long long u = a[k] % mod;
-        long long t = w * a[k + (h >> 1)] % mod;
+      T w = 1;
+      for (int k = j; k < j + half; k++) {
+        T u = a[k] % mod;
+        T t = static_cast<T>(1LL * w * a[k + half] % mod);
         a[k] = (u + t) % mod;
-        a[k + (h >> 1)] = (u - t + mod) % mod;
-        w = w * wn[id] % mod;
+        a[k + half] = (u - t + mod) % mod;
+        w = static_cast<T>(1LL * w * wn[id] % mod);
       }
     }
   }
   if (invert) {
-    for (int i = 1; i < (len >> 1); i++) { std::swap(a[i], a[len - i]); }
-    long long inv = quick_pow(len, mod - 2, mod);
-    for (int i = 0; i < len; i++) { a[i] = a[i] * inv % mod; }
+    int half_len = len / 2;
+    for (int i = 1; i < half_len; i++) { std::swap(a[i], a[len - i]); }
+    T inv = quick_pow(len, mod - 2, mod);
+    for (int i = 0; i < len; i++) {
+      a[i] = static_cast<T>(1LL * a[i] * inv % mod);
+    }
   }
 }
 
 std::vector<int> multiply(char a[], char b[]) {
   int len1 = strlen(a);
   int len2 = strlen(b);
-  int len = 1, bits = 1;
-  while (len < len1 + len2) {
-    len <<= 1;
-    bits++;
-  }
-  std::vector<long long> wn(bits);
-  for (int i = 0; i < bits; i++) {
-    wn[i] = quick_pow(G, (M - 1) / (1LL << i), M);
-  }
-  std::vector<long long> x1(len);
-  std::vector<long long> x2(len);
+  int len = 1;
+  while (len < len1 + len2) { len *= 2; }
+  std::vector<int> x1(len, 0);
+  std::vector<int> x2(len, 0);
   for (int i = 0; i < len1; i++) { x1[i] = a[len1 - i - 1] - '0'; }
-  for (int i = len1; i < len; i++) { x1[i] = 0; }
   for (int i = 0; i < len2; i++) { x2[i] = b[len2 - i - 1] - '0'; }
-  for (int i = len2; i < len; i++) { x2[i] = 0; }
-  ntt(x1, wn, M, false);
-  ntt(x2, wn, M, false);
-  for (int i = 0; i < len; i++) { x1[i] = x1[i] * x2[i]; }
-  ntt(x1, wn, M, true);
+  transform(x1, false);
+  transform(x2, false);
+  for (int i = 0; i < len; i++) { x1[i] = 1LL * x1[i] * x2[i] % mod; }
+  transform(x1, true);
   std::vector<int> res;
   int t = 0;
   for (int i = 0; i < len; i++, t /= 10) {
@@ -82,3 +85,5 @@ std::vector<int> multiply(char a[], char b[]) {
   std::reverse(res.begin(), res.end());
   return res;
 }
+
+} // namespace ntt
